@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { addContact } from '../../redux/ContactsSlice';
 import css from './Form.module.css';
 
-export default function Form({ onSubmit }) {
+export default function Form() {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
 
- const handleInputChange = event => {
-        const { name, value } = event.target;
-
+ const handleInputChange = ({ currentTarget: { name, value } }) => {
        switch (name) {
       case 'name':
         setName(value);
@@ -23,18 +23,14 @@ export default function Form({ onSubmit }) {
   };
 
    const handleSubmit = e => {
-        e.preventDefault();
-
-        onSubmit({ name, number });
-        reset();
+      e.preventDefault();
+      dispatch(addContact({ name, number }));
+      setName('');
+      setNumber('');
     };
 
-   const reset = () => {        
-       setName('');
-       setNumber('');      
-    };    
-
-        return (
+  return (
+             <div>
             <form className={css.form} onSubmit={handleSubmit}>
                 <label className={css.label}>
                     Name
@@ -64,11 +60,9 @@ export default function Form({ onSubmit }) {
                 <button type="submit" className={css.button}>
                     Add contact
                 </button>
-            </form>
+      </form>
+    </div>
         );
     }
 
 
-Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
